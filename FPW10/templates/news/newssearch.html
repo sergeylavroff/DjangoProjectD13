@@ -1,0 +1,64 @@
+{% extends 'flatpages/default.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}
+News info
+{% endblock title %}
+
+{% block content %}
+<h1>Все новости:</h1>
+
+<a class="btn btn-primary" href="/news ">Вернуться к списку новостей</a> <br>
+
+<form method="GET">
+    {{ filter.form }}
+    <input type="submit" value="Найти">
+</form>
+
+ {% if news %}
+        <h3> Всего новостей {{ news|length }}</h3>
+         <table bordercolor="black" border="2" width="100%">
+            <tr>
+                <td>
+                    Заголовок
+                </td>
+                <td>
+                    Дата публикации
+                </td>
+                <td>
+                    Текст
+                </td>
+                <td>
+                    Автор
+                </td>
+            </tr>
+             {% for new in filter.qs|dictsortreversed:"creation_date" %}
+             <tr>
+                <td>
+                    <a href="{% url 'article' new.id %}" style="color:white;">{{ new.title|censor }}</a>
+                    <a href="{% url 'article_edit' new.id %}" style="color:white;">
+                        <img border="0" alt="Редактировать" src="{% static 'edit.png' %}" width="25" height="25">
+                    </a>
+                    <a href="{% url 'article_delete' new.id %}" style="color:white;">
+                        <img border="0" alt="Удалить" src="{% static 'delete.png' %}" width="25" height="25">
+                    </a>
+                </td>
+                 <td>
+                    {{ new.creation_date|date:'d-M-Y H:i' }}
+                </td>
+                <td>
+                    {{ new.body|truncatechars:50|censor }}
+                </td>
+                <td>
+                    {{ new.author }}
+                </td>
+            </tr>
+             {% endfor %}
+        </table>
+    {% else %}
+        <h2> Нет новостей! </h2>
+    {% endif %}
+
+
+{% endblock content %}

@@ -1,41 +1,51 @@
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView
-
-from django.core.paginator import Paginator
+from django.views.generic import ListView, UpdateView, CreateView, DetailView, DeleteView
 from .models import Product
 from datetime import datetime
+from .filters import ProductFilter # импортируем недавно написанный фильтр
+from .forms import ProductForm
 
 
-class Products(ListView):
-
-    def get(self, request):
-        products = Product.objects.order_by('-price')
-        p = Paginator(products,
-                      1)  # создаём объект класса пагинатор, передаём ему список наших товаров и их количество для одной страницы
-
-        products = p.get_page(request.GET.get('page',
-                                              1))  # берём номер страницы из get-запроса. Если ничего не передали, будем показывать первую страницу.
-        # теперь вместо всех объектах в списке товаров хранится только нужная нам страница с товарами
-
-        data = {
-            'products': products,
-        }
-        return render(request, 'products.html', data)
-
-class ProductsList(ListView):
+class ProductsListView(ListView):
     model = Product  # указываем модель, объекты которой мы будем выводить
-    template_name = 'products.html'  # указываем имя шаблона, в котором будет лежать html, в котором будут все инструкции о том, как именно пользователю должны вывестись наши объекты
+    template_name = 'simpleapp/product_list.html'  # указываем имя шаблона, в котором будет лежать html, в котором будут все инструкции о том, как именно пользователю должны вывестись наши объекты
     context_object_name = 'products'
     ordering = ['-price']
-    paginate_by = 1
+    paginate_by = 2
+    form_class = ProductForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['filter'] = ProductFilter(self.request.GET, queryset=self.get_queryset())  # вписываем наш фильтр в контекст
         context['time_now'] = datetime.utcnow()  # добавим переменную текущей даты time_now
-        context['value1'] = None  # добавим ещё одну пустую переменную, чтобы на её примере посмотреть работу другого фильтра
+        context['form'] = ProductForm(initial={'name': 'Тачка'})
         return context
 
-class ProductDetail(DetailView):
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():  # если пользователь ввёл всё правильно и нигде не накосячил то сохраняем новый товар
+            form.save()
+
+        return super().get(request, *args, **kwargs)
+
+
+class ProductDetailView(DetailView):
     model = Product # модель всё та же, но мы хотим получать детали конкретно отдельного товара
-    template_name = 'product.html' # название шаблона будет product.html
+    template_name = 'simpleapp/product_detail.html' # название шаблона будет product.html
     context_object_name = 'product'
+
+class ProductCreateView(CreateView):
+    template_name = 'simpleapp/product_create.html'
+    form_class = ProductForm
+
+class ProductUpdateView(UpdateView):
+    template_name = 'simpleapp/product_create.html'
+    form_class = ProductForm
+
+    def get_object(self, **kwargs):
+        id = self.kwargs.get('pk')
+        return Product.objects.get(pk=id)
+
+class ProductDeleteView(DeleteView):
+    template_name = 'simpleapp/product_delete.html'
+    queryset = Product.objects.all()
+    success_url = '/products/'

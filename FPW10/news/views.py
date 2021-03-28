@@ -1,14 +1,45 @@
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, UpdateView, CreateView, DetailView, DeleteView
+from .filters import NewsFilter
 from .models import News
+from .forms import ArticleForm
 
 
 class NewsList(ListView):
-    model = News  # указываем модель, объекты которой мы будем выводить
-    template_name = 'news.html'  # указываем имя шаблона, в котором будет лежать html, в котором будут все инструкции о том, как именно пользователю должны вывестись наши объекты
+    model = News
+    template_name = 'news/news.html'
     context_object_name = 'news'
+    ordering = ['-creation_date']
+    paginate_by = 3
 
+class NewsSearch(ListView):
+    model = News
+    template_name = 'news/newssearch.html'
+    context_object_name = 'news'
+    ordering = ['-creation_date']
 
-class ArticleDetail(DetailView):
-    model = News # модель всё та же, но мы хотим получать детали конкретно отдельного товара
-    template_name = 'article.html' # название шаблона будет product.html
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['filter'] = NewsFilter(self.request.GET, queryset=self.get_queryset())
+        return context
+
+class ArticleDetailView(DetailView):
+    model = News
+    template_name = 'news/article.html'
     context_object_name = 'article'
+
+class ArticleCreateView(CreateView):
+    template_name = 'news/article_add.html'
+    form_class = ArticleForm
+
+class ArticleUpdateView(UpdateView):
+    template_name = 'news/article_add.html'
+    form_class = ArticleForm
+
+    def get_object(self, **kwargs):
+        id = self.kwargs.get('pk')
+        return News.objects.get(pk=id)
+
+class ArticleDeleteView(DeleteView):
+    template_name = 'news/article_delete.html'
+    queryset = News.objects.all()
+    success_url = '/news/'

@@ -25,6 +25,9 @@ class Product(models.Model):
     def __str__(self):
         return f'{self.name.title()}: {self.quantity}'
 
+    def get_absolute_url(self):
+        return f'/products/{self.id}'
+
 
 #  создаём категорию, к которой будет привязываться товар
 class Category(models.Model):

@@ -1,0 +1,46 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %} News list {% endblock title %}
+
+{% block content %}
+<h2>Вы действительно хотите удалить эту новость?</h2>
+<table bordercolor="black" border="2" width="100%">
+            <tr>
+                <td>
+                    Заголовок
+                </td>
+                <td>
+                    Дата публикации
+                </td>
+                <td>
+                    Текст
+                </td>
+                <td>
+                    Автор
+                </td>
+            </tr>
+             <tr>
+                <td>
+                    {{ news.title|censor }}
+                </td>
+                 <td>
+                    {{ news.creation_date|date:'d-M-Y H:i' }}
+                </td>
+                <td>
+                    {{ news.body|censor }}
+                </td>
+                <td>
+                    {{ news.author }}
+                </td>
+            </tr>
+</table>
+
+<form method="POST">
+    {% csrf_token %}
+    <input type="submit" value="подтвердить"></form>
+
+<a class="btn btn-primary" href="/news ">Вернуться к списку новостей</a> <br>
+
+{% endblock content %}

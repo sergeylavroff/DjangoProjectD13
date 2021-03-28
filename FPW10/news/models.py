@@ -13,12 +13,25 @@ class News(models.Model):
         to='Category',
         on_delete=models.CASCADE,
         related_name='news',)
+    author = models.ForeignKey(
+        to='Author',
+        on_delete=models.CASCADE,
+        related_name='news',)
 
     def __str__(self):
         return f'{self.title.title()}: {self.body[:20]}'
 
+    def get_absolute_url(self):
+        return f'/news/{self.id}'
+
 
 class Category(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return f'{self.name.title()}'
+
+class Author(models.Model):
     name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):

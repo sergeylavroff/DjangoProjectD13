@@ -1,58 +1,59 @@
 {% extends 'flatpages/default.html' %}
-
+{% load static %}
 {% load custom_filters %}
 
 {% block title %}
-Products
+Новости нашего городка
 {% endblock title %}
 
 {% block content %}
-<h1>Все товары</h1>
-<h3>{{ time_now|date:'d M y' }}</h3>
-    {% if products %}
-         <table bordercolor="black" border="2" width="100%">
+<h1>Все новости:</h1>
+<a class="btn btn-primary" href="/news/search"> Страница поиска </a>
+ {% if news %}
+         <table bordercolor="black" border="4" width="100%">
             <tr>
                 <td>
-                    Название
+                    Заголовок
                 </td>
                 <td>
-                    Описание
+                    Дата публикации
                 </td>
                 <td>
-                    Категория
+                    Текст
                 </td>
                 <td>
-                    Цена
-                </td>
-                <td>
-                    Количество
+                    Автор
                 </td>
             </tr>
-             {% for product in products %}
+             {% for article in news|dictsortreversed:"creation_date" %}
              <tr>
                 <td>
-                    {{ product.name }}
+                    <a href="{% url 'article' article.id %}" style="color:white;">{{ article.title|censor }}</a>
+                    <a href="{% url 'article_edit' article.id %}" style="color:white;">
+                        <img border="0" alt="Редактировать" src="{% static 'edit.png' %}" width="25" height="25">
+                    </a>
+                    <a href="{% url 'article_delete' article.id %}" style="color:white;">
+                        <img border="0" alt="Удалить" src="{% static 'delete.png' %}" width="25" height="25">
+                    </a>
+                </td>
+                 <td>
+                    {{ article.creation_date|date:'d-M-Y H:i' }}
                 </td>
                 <td>
-                    {{ product.description|truncatewords:4 }}
+                    {{ article.body|truncatechars:50|censor }}
                 </td>
-                <td>
-                    {{ product.category.name }}
-                </td>
-                <td>
-                    {{ product.price }}
-                </td>
-                <td>
-                    {{ product.quantity }}
+                 <td>
+                    {{ article.author }}
                 </td>
             </tr>
              {% endfor %}
         </table>
     {% else %}
-        <h2> Машин нет </h2>
+        <h2> Нет новостей! </h2>
     {% endif %}
 
-    <!-- Проверяем что поддерживается постраничный вывод -->
+<a class="btn btn-primary" href="{% url 'article_create' %}">Добавить статью</a> <br>
+
 {% if is_paginated %}
 
     <!-- Если доступна предыдущая страница, то даём ссылку на неё и самую первую страницу -->
@@ -77,5 +78,4 @@ Products
     {% endif %}
 
 {% endif %}
-
 {% endblock content %}

@@ -7,10 +7,7 @@ Product info
 {% endblock title %}
 
 {% block content %}
-<h1>Все новости:</h1>
- {% if news %}
-        <h3> Всего новостей {{ news|length }}</h3>
-         <table bordercolor="black" border="2" width="100%">
+<table bordercolor="black" border="2" width="100%">
             <tr>
                 <td>
                     Заголовок
@@ -21,22 +18,26 @@ Product info
                 <td>
                     Текст
                 </td>
-            </tr>
-             {% for new in news|dictsortreversed:"creation_date" %}
-             <tr>
                 <td>
-                    {{ new.title|censor }}
+                    Автор
+                </td>
+            </tr>
+             <tr>
+                 <td>
+                    {{ article.title|censor }}
                 </td>
                  <td>
-                    {{ new.creation_date|date:'d-M-Y H:i' }}
+                    {{ article.creation_date|date:'d-M-Y H:i' }}
                 </td>
                 <td>
-                    {{ new.body|truncatechars:50|censor }}
+                    {{ article.body|censor }}
+                </td>
+                <td>
+                    {{ article.author }}
                 </td>
             </tr>
-             {% endfor %}
         </table>
-    {% else %}
-        <h2> Нет новостей! </h2>
-    {% endif %}
+
+<a class="btn btn-primary" href="/news ">Вернуться к списку новостей</a> <br>
+
 {% endblock content %}
