@@ -12,3 +12,4 @@ class NewsFilter(FilterSet):
         'creation_date':['gt'], #Как задать формат даты для поиска?
         'author':['exact'],
         }
+        paginate_by = 3

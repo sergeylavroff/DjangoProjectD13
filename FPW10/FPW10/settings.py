@@ -44,9 +44,15 @@ INSTALLED_APPS = [
     'simpleapp',
     'news',
     'django_filters',
+    'sign',
+    'protect',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
-SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -90,6 +96,12 @@ DATABASES = {
     }
 }
 
+AUTHENTICATION_BACKENDS = [
+
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -109,6 +121,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGIN_URL = 'sign/login/'
+#LOGIN_URL = 'accounts/login/'
+SITE_ID = 1
+
+LOGIN_REDIRECT_URL = '/news/'
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
@@ -128,7 +145,12 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+ACCOUNT_FORMS = {'signup': 'sign.models.BasicSignupForm'}
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
