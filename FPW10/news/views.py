@@ -1,4 +1,5 @@
 from django.views.generic import ListView, UpdateView, CreateView, DetailView, DeleteView
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from .filters import NewsFilter
 from .models import News
 from .forms import ArticleForm
@@ -27,11 +28,13 @@ class ArticleDetailView(DetailView):
     template_name = 'news/article.html'
     context_object_name = 'article'
 
-class ArticleCreateView(CreateView):
+class ArticleCreateView(PermissionRequiredMixin, CreateView):
+    permission_required = ('news.add_news', )
     template_name = 'news/article_add.html'
     form_class = ArticleForm
 
-class ArticleUpdateView(UpdateView):
+class ArticleUpdateView(PermissionRequiredMixin, UpdateView):
+    permission_required = ('news.change_news', )
     template_name = 'news/article_add.html'
     form_class = ArticleForm
 
@@ -39,7 +42,8 @@ class ArticleUpdateView(UpdateView):
         id = self.kwargs.get('pk')
         return News.objects.get(pk=id)
 
-class ArticleDeleteView(DeleteView):
+class ArticleDeleteView(PermissionRequiredMixin, DeleteView):
+    permission_required = ('news.delete_news', )
     template_name = 'news/article_delete.html'
     queryset = News.objects.all()
     success_url = '/news/'

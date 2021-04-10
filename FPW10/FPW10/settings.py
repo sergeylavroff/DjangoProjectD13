@@ -121,11 +121,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LOGIN_URL = 'sign/login/'
-#LOGIN_URL = 'accounts/login/'
+LOGIN_URL = 'accounts/login/'
 SITE_ID = 1
 
 LOGIN_REDIRECT_URL = '/news/'
+
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
