@@ -1,4 +1,4 @@
-{% extends 'flatpages/default.html' %}
+{% extends 'http://127.0.0.1:8000/flatpages/default.html' %}
 {% load static %}
 {% load custom_filters %}
 
@@ -8,7 +8,7 @@
 
 {% block content %}
 <h1>Все новости:</h1>
-<a class="btn btn-primary" href="/news/search"> Страница поиска </a>
+<a class="btn btn-primary" href="http://127.0.0.1:8000/news/search"> Страница поиска </a>
  {% if news %}
          <table bordercolor="black" border="4" width="100%">
             <tr>
@@ -31,12 +31,12 @@
              {% for article in news|dictsortreversed:"creation_date" %}
              <tr>
                 <td>
-                    <a href="{% url 'article' article.id %}" style="color:white;">{{ article.title|censor }}</a>
-                    <a href="{% url 'article_edit' article.id %}" style="color:white;">
-                        <img border="0" alt="Редактировать" src="{% static 'edit.png' %}" width="25" height="25">
+                    <a href="http://127.0.0.1:8000{% url 'article' article.id %}" style="color:black;">{{ article.title|censor }}</a>
+                    <a href="http://127.0.0.1:8000{% url 'article_edit' article.id %}" style="color:black;">
+                        <img border="0" alt="Редактировать" src="http://127.0.0.1:8000{% static 'edit.png' %}" width="25" height="25">
                     </a>
-                    <a href="{% url 'article_delete' article.id %}" style="color:white;">
-                        <img border="0" alt="Удалить" src="{% static 'delete.png' %}" width="25" height="25">
+                    <a href="http://127.0.0.1:8000{% url 'article_delete' article.id %}" style="color:black;">
+                        <img border="0" alt="Удалить" src="http://127.0.0.1:8000{% static 'delete.png' %}" width="25" height="25">
                     </a>
                 </td>
                  <td>
@@ -58,7 +58,7 @@
         <h2> Нет новостей! </h2>
     {% endif %}
 
-<a class="btn btn-primary" href="{% url 'article_create' %}">Добавить статью</a> <br>
+<a class="btn btn-primary" href="http://127.0.0.1:8000{% url 'article_create' %}">Добавить статью</a> <br>
 
 {% if is_paginated %}
 

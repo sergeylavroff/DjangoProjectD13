@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'fpages',
     'simpleapp',
-    'news',
+    'news.apps.NewsConfig',
     'django_filters',
     'sign',
     'protect',
@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'django_apscheduler',
 ]
 
 
@@ -145,13 +146,22 @@ USE_L10N = True
 
 USE_TZ = True
 
+DEFAULT_FROM_EMAIL = 'center.33@yandex.ru'
+EMAIL_HOST = 'smtp.yandex.ru' # адрес сервера Яндекс-почты для всех один и тот же
+EMAIL_PORT = 465 # порт smtp сервера тоже одинаковый
+EMAIL_HOST_USER = 'center.33@yandex.ru' # ваше имя пользователя, например если ваша почта user@yandex.ru, то сюда надо писать user, иными словами, это всё то что идёт до собаки
+EMAIL_HOST_PASSWORD = 'rjgtwzrsnbsmebjm' # пароль от почты
+EMAIL_USE_SSL = True
+
 ACCOUNT_FORMS = {'signup': 'sign.models.BasicSignupForm'}
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = 'true'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 7
 

@@ -21,6 +21,9 @@ Product info
                 <td>
                     Автор
                 </td>
+                <td>
+                    Категория
+                </td>
             </tr>
              <tr>
                  <td>
@@ -35,8 +38,23 @@ Product info
                 <td>
                     {{ article.author }}
                 </td>
+                <td>
+                    {{ article.category }}
+                </td>
             </tr>
         </table>
+
+{% if subscribed %}
+    <form action = "{% url 'subscribe' article.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" name="category" value="{{ article.category.id }}">Отписаться от {{ article.category }}</button>
+    </form>
+{% else %}
+    <form action = "{% url 'subscribe' article.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" name="category" value="{{ article.category.id }}">Подписаться на {{ article.category }}</button>
+    </form>
+{% endif %}
 
 <a class="btn btn-primary" href="/news ">Вернуться к списку новостей</a> <br>
 

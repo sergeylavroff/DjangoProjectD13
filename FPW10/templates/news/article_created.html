@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+{% load custom_filters %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Новая статья</title>
+</head>
+<body>
+    <h2>В интересующей Вас категории {{ article.category }} появилась новость!</h2>
+    <a href="http://127.0.0.1:8000{% url 'article' article.id %}" style="color:black;">{{ article.title|censor }}</a>
+    <p> {{ article.body|censor|truncatechars:50 }}</p>
+</body>
+</html>

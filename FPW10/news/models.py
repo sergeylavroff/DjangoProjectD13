@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class News(models.Model):
@@ -27,9 +28,10 @@ class News(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    subscriber = models.ManyToManyField(User, blank=True, verbose_name='Подписчики')
 
     def __str__(self):
-        return f'{self.name.title()}'
+        return self.name
 
 class Author(models.Model):
     name = models.CharField(max_length=100, unique=True)

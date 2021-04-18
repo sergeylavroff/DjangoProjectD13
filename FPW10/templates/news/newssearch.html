@@ -32,6 +32,9 @@ News info
                 <td>
                     Автор
                 </td>
+                <td>
+                    Категория
+                </td>
             </tr>
              {% for new in filter.qs|dictsortreversed:"creation_date" %}
              <tr>
@@ -52,6 +55,9 @@ News info
                 </td>
                 <td>
                     {{ new.author }}
+                </td>
+                <td>
+                    {{ new.category }}
                 </td>
             </tr>
              {% endfor %}
