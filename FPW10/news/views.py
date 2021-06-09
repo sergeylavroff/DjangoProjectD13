@@ -5,8 +5,7 @@ from .filters import NewsFilter
 from .models import News, Category
 from .forms import ArticleForm
 from django.contrib.auth.decorators import login_required
-# from django.template.loader import render_to_string
-# from django.core.mail import EmailMultiAlternatives
+from django.core.cache import cache
 
 @login_required
 def Subscribe(request, pk ):
@@ -42,6 +41,15 @@ class ArticleDetailView(LoginRequiredMixin, DetailView):
     template_name = 'news/article.html'
     context_object_name = 'article'
 
+    def get_object(self, *args, **kwargs):
+        obj = cache.get(f'article-{self.kwargs["pk"]}', None)
+
+        if not obj:
+            obj = super().get_object()
+            cache.set(f'article-{self.kwargs["pk"]}', obj)
+
+        return obj
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         id = self.kwargs.get('pk')
@@ -57,30 +65,6 @@ class ArticleCreateView(PermissionRequiredMixin, CreateView):
     template_name = 'news/article_add.html'
     form_class = ArticleForm
 
-    # def form_valid(self, form):
-    #     form.instance.created_by = self.request.user
-    #     subscribers = form.instance.category.subscriber.all()
-    #     print(subscribers)
-    #     address = []
-    #     for a in subscribers:
-    #         address.append(a.email)
-    #     html_content = render_to_string(
-    #         'news/article_created.html',
-    #         {
-    #             'article': form.instance.body,
-    #         }
-    #     )
-    #     msg = EmailMultiAlternatives(
-    #         subject=f'{form.instance.title}',
-    #         body=form.instance.body,
-    #         from_email='center.33@yandex.ru',
-    #         to=[ *address ],
-    #     )
-    #     msg.attach_alternative(html_content, "text/html")  # добавляем html
-    #
-    #     msg.send()
-    #     return super().form_valid(form)
-
 class ArticleUpdateView(PermissionRequiredMixin, UpdateView):
     permission_required = ('news.change_news', )
     template_name = 'news/article_add.html'
@@ -89,6 +73,10 @@ class ArticleUpdateView(PermissionRequiredMixin, UpdateView):
     def get_object(self, **kwargs):
         id = self.kwargs.get('pk')
         return News.objects.get(pk=id)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)  # сначала вызываем метод родителя, чтобы объект сохранился
+        cache.delete(f'article-{self.pk}')
 
 class ArticleDeleteView(PermissionRequiredMixin, DeleteView):
     permission_required = ('news.delete_news', )
