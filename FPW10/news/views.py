@@ -1,3 +1,5 @@
+from django.http import HttpResponse
+from django.views import View
 from django.views.generic import ListView, UpdateView, CreateView, DetailView, DeleteView
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
@@ -6,6 +8,8 @@ from .models import News, Category
 from .forms import ArticleForm
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
+
+from django.utils.translation import gettext  # импортируем функцию для перевода
 
 @login_required
 def Subscribe(request, pk ):
@@ -84,3 +88,10 @@ class ArticleDeleteView(PermissionRequiredMixin, DeleteView):
     queryset = News.objects.all()
     success_url = '/news/'
 
+
+# Create your views here.
+
+class Index(View):
+    def get(self, request):
+        string = gettext('Hello world!')
+        return HttpResponse(string)

@@ -24,12 +24,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '&=y7&8ih(k2g98q%-y(at1&s3yb5hy6&ewt2n!j@sixtr$_)h('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [ '127.0.0.1' ]
 
-
+USE_I18N = True
 # Application definition
+
+LANGUAGE_CODE = 'ru'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -185,7 +187,7 @@ CACHES = {
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
+    'disable_existing_loggers': True,
     'formatters': {
         'console': {
             'format': '%(asctime)s %(levelname)s %(message)s'
@@ -219,13 +221,13 @@ LOGGING = {
             'level': 'WARNING',
             'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
-            'formatter': 'console_warning'
+            'formatter': 'console_warning',
         },
         'console_errcrit': {
             'level': 'ERROR',
             'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
-            'formatter': 'errcrit'
+            'formatter': 'errcrit',
         },
         'general': {
             'level': 'INFO',
@@ -254,10 +256,6 @@ LOGGING = {
         }
     },
     'loggers': {
-        'django': {
-            'handlers': ['console_debug', 'general', 'console_warning', 'console_errcrit'],
-            'propagate': True,
-        },
         'django.request': {
             'handlers': ['mail_admins', 'errors'],
             'level': 'ERROR',
@@ -281,6 +279,18 @@ LOGGING = {
         'django.security': {
             'handlers': ['security'],
             'level': 'INFO',
+            'propagate': True,
+        },
+        'django': {
+            'handlers': ['console_errcrit'],
+            'propagate': False,
+        },
+        'django': {
+            'handlers': ['console_warning'],
+            'propagate': False,
+        },
+        'django': {
+            'handlers': ['general', 'console_debug'],
             'propagate': False,
         },
     }
